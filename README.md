@@ -1,30 +1,67 @@
-# React + TypeScript + Vite
+# Test Double Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<details open="open">
+<summary>目次</summary>
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+- [Vitestのセットアップ](#Vitestのセットアップ)
+- [testDouble概要](#testDouble概要)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
+- [参考](#参考)
+
+</details>
+
+# Vitestのセットアップ
+
+<details>
+<summary> 1. 必要ライブラリーのインストール</summary>
+下記を追加
+
+```package.json
+ "devDependencies": {
+    "@testing-library/dom": "^9.3.3",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jsdom": "^21.1.3",
+    "jsdom": "^24.0.0",
+    "vitest": "^0.34.4"
+  }
+```
+</details>
+
+<details>
+<summary> 2. test-setup.jsの設定</summary>
 
 ```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+import {expect} from 'vitest'
+import matchers from "@testing-library/jest-dom/matchers";
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+expect.extend(matchers)
+```
+</details>
+
+<details>
+<summary> 3. vite.config.tsの設定</summary>
+下記を追加
+
+```ts
+import {InlineConfig} from "vitest";
+const testConfig: InlineConfig = {
+  environment: 'jsdom',
+  setupFiles: ['./test-setup.js'],
+  globals: true,
+  include: ['./src/**/*.test.{tsx,ts}'],
+}
+export default defineConfig({
+  test: testConfig,
+})
+```
+</details>
+
+# testDouble概要
+
+# 参考
+- [getByRoleで取れるタグ](https://qiita.com/tondemonai7/items/3f7ed9bd6af1e0c3dfb7)
